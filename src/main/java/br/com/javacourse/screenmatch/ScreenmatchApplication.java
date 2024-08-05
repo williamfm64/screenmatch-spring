@@ -1,16 +1,9 @@
 package br.com.javacourse.screenmatch;
 
-import br.com.javacourse.screenmatch.model.DadosEpisodio;
-import br.com.javacourse.screenmatch.model.DadosSerie;
-import br.com.javacourse.screenmatch.model.DadosTemporada;
-import br.com.javacourse.screenmatch.services.ConsomeApi;
-import br.com.javacourse.screenmatch.services.ConverteDados;
+import br.com.javacourse.screenmatch.principal.Principal;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication
 public class ScreenmatchApplication implements CommandLineRunner {
@@ -21,28 +14,7 @@ public class ScreenmatchApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("Hello World!!!");
-
-		var consumirApi = new ConsomeApi();
-		var json = consumirApi.obterDados("http://www.omdbapi.com/?apikey=dcd8819e&t=the+walking+dead");
-		System.out.println(json);
-
-		var conversor = new ConverteDados();
-
-		DadosSerie walking = conversor.converteDados(json, DadosSerie.class);
-		System.out.println(walking);
-
-		json = consumirApi.obterDados("http://www.omdbapi.com/?apikey=dcd8819e&t=the+walking+dead&season=1&episode=2");
-		DadosEpisodio episodio = conversor.converteDados(json, DadosEpisodio.class);
-		System.out.println(episodio);
-
-		List<DadosTemporada> listaDeTemporadas= new ArrayList<>();
-
-		for (int i = 1; i <= walking.totalTemporadas(); i++){
-			json = consumirApi.obterDados("http://www.omdbapi.com/?apikey=dcd8819e&t=the+walking+dead&season=" + i );
-			listaDeTemporadas.add(conversor.converteDados(json, DadosTemporada.class));
-		}
-
-		listaDeTemporadas.forEach(System.out::println);
+		Principal principal = new Principal();
+		principal.exibeMenu();
 	}
 }
