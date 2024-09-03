@@ -1,13 +1,17 @@
 package br.com.javacourse.screenmatch.principal;
 
+import br.com.javacourse.screenmatch.model.DadosEpisodio;
 import br.com.javacourse.screenmatch.model.DadosSerie;
 import br.com.javacourse.screenmatch.model.DadosTemporada;
+import br.com.javacourse.screenmatch.model.Episodio;
 import br.com.javacourse.screenmatch.services.ConsomeApi;
 import br.com.javacourse.screenmatch.services.ConverteDados;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Principal {
     private final String ENDERECO = "http://www.omdbapi.com/?";
@@ -34,5 +38,23 @@ public class Principal {
         System.out.println(novaSerie);
         listaDeTemporadas.forEach(System.out::println);
 
+        listaDeTemporadas.forEach(e -> e.listaDeEpisodios().forEach(ep -> System.out.println(ep.titulo())));
+
+        List<DadosEpisodio> episodiosTemporada = listaDeTemporadas.stream()
+                .flatMap(t -> t.listaDeEpisodios().stream())
+                .collect(Collectors.toList());
+
+        episodiosTemporada.stream()
+                .sorted(Comparator.comparing(DadosEpisodio::classificacao).reversed())
+                .filter(e -> !e.classificacao().equalsIgnoreCase("N/A"))
+                .limit(5)
+                .forEach(System.out::println);
+
+        List<Episodio> episodiosSerie = listaDeTemporadas.stream()
+                .flatMap(t -> t.listaDeEpisodios().stream()
+                        .map(e -> new Episodio(t.numeroTemporada(), e))
+                ).collect(Collectors.toList());
+
+        episodiosSerie.forEach(System.out::println);
     }
 }
